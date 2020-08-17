@@ -69,9 +69,9 @@ def printMenu():
     """
     print("\nBienvenido")
     print("1- Cargar Datos")
-    print("2- Contar los elementos de la Lista")
+    print("2- Contar los elementos cargados")
     print("3- Contar elementos filtrados por palabra clave")
-    print("4- Consultar elementos a partir de dos listas")
+    print("4- Consultar buenas peliculas de un director")
     print("0- Salir")
 
 def countElementsFilteredByColumn(criteria, column, lst):
@@ -101,11 +101,41 @@ def countElementsFilteredByColumn(criteria, column, lst):
         print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     return counter
 
-def countElementsByCriteria(criteria, column, lst):
+def countElementsByCriteria(director,lst,lst2):
     """
-    Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
+    Retorna la cantidad de peliculas buenas que tiene un director
+    El archivo con los valores de +300000 datos requiere cambiar el id por \ufeffid  
     """
-    return 0
+
+    if len(lst)==0 or len(lst2)==0:
+        print("la lista esta vacia")
+        return 0
+    t1_start = process_time() #tiempo inicial
+    counter=0 #Cantidad de repeticiones
+    peliculas_director=[]
+    peliculas_buenas_director=0
+    promedio=0
+    iteracion=0
+    total=0
+    for names in lst2:
+        if names["director_name"]==director:
+            peliculas_director.append(names["id"])
+    for grade in lst:
+        if grade["id"] in peliculas_director and len(peliculas_director)>0:
+            if float(grade["vote_average"])>=6: 
+                peliculas_buenas_director+=1 
+                promedio+=float(grade["vote_average"])
+                iteracion+=1
+            peliculas_director.remove(grade["id"])
+    if iteracion==0:
+        total=promedio
+    else:
+        total=round((promedio/iteracion),1)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
+    return (peliculas_buenas_director,total)             
+
+
 
 
 def main():
@@ -117,25 +147,30 @@ def main():
     Return: None 
     """
     lista = [] #instanciar una lista vacia
+    lista2=[]
     while True:
         printMenu() #imprimir el menu de opciones en consola
         inputs =input('Seleccione una opción para continuar\n') #leer opción ingresada
         if len(inputs)>0:
             if int(inputs[0])==1: #opcion 1
-                loadCSVFile("Data/test.csv", lista) #llamar funcion cargar datos
+                loadCSVFile("Data/SmallMoviesDetailsCleaned.csv", lista) #llamar funcion cargar datos
+                loadCSVFile("Data/MoviesCastingRaw-small.csv", lista2)
                 print("Datos cargados, "+str(len(lista))+" elementos cargados")
             elif int(inputs[0])==2: #opcion 2
                 if len(lista)==0: #obtener la longitud de la lista
                     print("La lista esta vacía")    
+
                 else: print("La lista tiene "+str(len(lista))+" elementos")
             elif int(inputs[0])==3: #opcion 3
+                columna=str(input("ingrese la columna que desea filtrar\n")).lower()
                 criteria =input('Ingrese el criterio de búsqueda\n')
-                counter=countElementsFilteredByColumn(criteria, "nombre", lista) #filtrar una columna por criterio  
+                counter=countElementsFilteredByColumn(criteria, columna, lista) #filtrar una columna por criterio  
                 print("Coinciden ",counter," elementos con el crtierio: ", criteria  )
             elif int(inputs[0])==4: #opcion 4
-                criteria =input('Ingrese el criterio de búsqueda\n')
-                counter=countElementsByCriteria(criteria,0,lista)
-                print("Coinciden ",counter," elementos con el crtierio: '", criteria ,"' (en construcción ...)")
+                criteria =input('Ingrese el nombre del director que quiere buscar\n')
+                counter=countElementsByCriteria(criteria,lista,lista2)
+                print(f"Se encontraron {counter[0]} peliculas buenas del director {criteria}\nSu calificacion promedio es de {counter[1]}")
+               
             elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
 
