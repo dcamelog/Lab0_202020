@@ -74,7 +74,7 @@ def printMenu():
     print("4- Consultar elementos a partir de dos listas")
     print("0- Salir")
 
-def countElementsFilteredByColumn(criteria, column, lst):
+def countElementsFilteredByColumn2(criteria, column, lst):
     """
     Retorna cuantos elementos coinciden con un criterio para una columna dada  
     Args:
