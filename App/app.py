@@ -101,7 +101,7 @@ def countElementsFilteredByColumn(criteria, column, lst):
         print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     return counter
 
-def countElementsByCriteria(criteria, lst, lst2):
+def countElementsByCriteria2(criteria, lst, lst2):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
